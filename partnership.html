@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제휴 문의 - Partnership Inquiry</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--heading-color);
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(20, 30, 45, 0.2);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--button-background);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group.submit {
+            margin-top: 2rem;
+        }
+
+        button[type="submit"] {
+            background-color: var(--button-background);
+            color: var(--button-text);
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--toggle-background);
+            border: 1px solid var(--toggle-border);
+            border-radius: 6px;
+            color: var(--toggle-text);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(36, 116, 166, 0.1);
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <a href="index.html" class="back-button">← 돌아가기</a>
+        
+        <div class="top-bar">
+            <h1>제휴 문의</h1>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">Dark Mode</button>
+        </div>
+
+        <form action="https://formspree.io/f/meenlnaj" method="POST">
+            <div class="form-group">
+                <label for="company">회사명 <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    id="company" 
+                    name="company" 
+                    placeholder="회사명을 입력해주세요"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="name">담당자명 <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="담당자명을 입력해주세요"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="email">이메일 <span class="required">*</span></label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="이메일@example.com"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="phone">전화번호</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="010-0000-0000"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="message">제휴 내용 <span class="required">*</span></label>
+                <textarea 
+                    id="message" 
+                    name="message" 
+                    placeholder="제휴 관련 내용을 작성해주세요..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group submit">
+                <button type="submit">문의하기</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 테마 토글 기능
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeStorageKey = 'lotto-theme';
+
+            const getInitialTheme = () => {
+                const savedTheme = localStorage.getItem(themeStorageKey);
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    return savedTheme;
+                }
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            };
+
+            const applyTheme = (theme) => {
+                document.body.dataset.theme = theme;
+                const nextTheme = theme === 'dark' ? 'light' : 'dark';
+                themeToggle.textContent = theme === 'dark' ? 'White Mode' : 'Dark Mode';
+                themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+            };
+
+            applyTheme(getInitialTheme());
+
+            themeToggle.addEventListener('click', () => {
+                const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem(themeStorageKey, nextTheme);
+                applyTheme(nextTheme);
+            });
+        });
+    </script>
+</body>
+</html>
