@@ -43,17 +43,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const sumStat = document.getElementById('sum-stat');
     const oddEvenStat = document.getElementById('odd-even-stat');
     const rangeStat = document.getElementById('range-stat');
+    const purchaseStat = document.getElementById('purchase-stat');
+    const budgetInput = document.getElementById('budget-input');
+    const budgetStatus = document.getElementById('budget-status');
+    const matchSummary = document.getElementById('match-summary');
+    const oddEvenFilter = document.getElementById('odd-even-filter');
+    const rangeBalanceFilter = document.getElementById('range-balance-filter');
+    const noConsecutiveFilter = document.getElementById('no-consecutive-filter');
 
     const latestWinning = document.getElementById('latest-winning');
     const recentWinningList = document.getElementById('recent-winning-list');
     const reloadWinningBtn = document.getElementById('reload-winning-btn');
-    const drawInput = document.getElementById('draw-input');
-    const drawSearchBtn = document.getElementById('draw-search-btn');
-    const drawResult = document.getElementById('draw-result');
 
     const fixedNumbers = new Set();
     const excludedNumbers = new Set();
     let currentCombinations = [];
+    let latestReferenceDraw = null;
 
     const allNumbers = Array.from({ length: 45 }, (_, index) => index + 1);
     const fallbackDraws = [
@@ -112,11 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('최근 회차를 찾지 못했습니다.');
     };
 
-    const createBall = (number, extraClass = '') => {
+    const createBall = (number, extraClass = '', delay = 0) => {
         const ball = document.createElement('span');
         ball.className = `number-circle ${extraClass}`.trim();
         ball.textContent = number;
         ball.style.backgroundColor = getColor(number);
+        if (delay > 0) {
+            ball.style.animationDelay = `${delay}ms`;
+        }
         return ball;
     };
 
@@ -150,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const latestDraw = await findLatestDraw();
+            latestReferenceDraw = latestDraw;
             latestWinning.innerHTML = '';
             latestWinning.appendChild(renderWinningCard(latestDraw));
 
@@ -160,49 +169,24 @@ document.addEventListener('DOMContentLoaded', () => {
             recentWinningList.innerHTML = '';
             recentDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
 
-            if (drawInput && !drawInput.value) {
-                drawInput.value = latestDraw.drawNo;
+            if (currentCombinations.length) {
+                updateMatchSummary(currentCombinations);
             }
         } catch (error) {
+            latestReferenceDraw = fallbackDraws[0];
             latestWinning.innerHTML = '';
             latestWinning.appendChild(renderWinningCard(fallbackDraws[0]));
 
             recentWinningList.innerHTML = '';
             fallbackDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
 
-            if (drawInput && !drawInput.value) {
-                drawInput.value = fallbackDraws[0].drawNo;
-            }
-
             const notice = document.createElement('p');
             notice.className = 'fine-print';
             notice.textContent = '실시간 조회가 차단되어 내장된 최근 7회 데이터를 표시하고 있습니다.';
             recentWinningList.appendChild(notice);
-        }
-    };
-
-    const lookupDraw = async () => {
-        if (!drawInput || !drawResult) return;
-        const drawNo = Number(drawInput.value);
-
-        if (!Number.isInteger(drawNo) || drawNo < 1) {
-            drawResult.textContent = '조회할 회차 번호를 입력해주세요.';
-            return;
-        }
-
-        drawResult.textContent = '회차를 조회하는 중입니다.';
-        try {
-            const draw = await fetchDraw(drawNo);
-            drawResult.innerHTML = '';
-            drawResult.appendChild(renderWinningCard(draw));
-        } catch (error) {
-            const fallbackDraw = fallbackDraws.find((draw) => draw.drawNo === drawNo);
-            if (fallbackDraw) {
-                drawResult.innerHTML = '';
-                drawResult.appendChild(renderWinningCard(fallbackDraw));
-                return;
+            if (currentCombinations.length) {
+                updateMatchSummary(currentCombinations);
             }
-            drawResult.textContent = `${error.message} 최근 7회 외의 회차는 잠시 후 다시 시도해주세요.`;
         }
     };
 
@@ -291,6 +275,51 @@ document.addEventListener('DOMContentLoaded', () => {
         return selected.sort((a, b) => a - b);
     };
 
+    const hasConsecutiveNumbers = (combination) => {
+        return combination.some((number, index) => index > 0 && number - combination[index - 1] === 1);
+    };
+
+    const hasBalancedRanges = (combination) => {
+        const usedRanges = new Set(combination.map((number) => {
+            if (number <= 10) return '1';
+            if (number <= 20) return '2';
+            if (number <= 30) return '3';
+            if (number <= 40) return '4';
+            return '5';
+        }));
+
+        return usedRanges.size >= 4;
+    };
+
+    const passesFilters = (combination) => {
+        const oddCount = combination.filter((number) => number % 2 === 1).length;
+        const evenCount = combination.length - oddCount;
+        const oddEvenValue = oddEvenFilter?.value || 'any';
+
+        if (oddEvenValue !== 'any') {
+            const [targetOdd, targetEven] = oddEvenValue.split('-').map(Number);
+            if (oddCount !== targetOdd || evenCount !== targetEven) return false;
+        }
+        if (rangeBalanceFilter?.value === 'balanced' && !hasBalancedRanges(combination)) return false;
+        if (noConsecutiveFilter?.checked && hasConsecutiveNumbers(combination)) return false;
+
+        return true;
+    };
+
+    const generateFilteredCombination = () => {
+        let fallback = null;
+
+        for (let attempt = 0; attempt < 700; attempt += 1) {
+            const combination = generateCombination();
+            fallback = combination;
+            if (passesFilters(combination)) {
+                return combination;
+            }
+        }
+
+        throw new Error('조건에 맞는 조합을 만들기 어렵습니다. 필터를 조금 완화해주세요.');
+    };
+
     const summarizeRanges = (combinations) => {
         const flat = combinations.flat();
         const counts = [
@@ -319,6 +348,53 @@ document.addEventListener('DOMContentLoaded', () => {
         sumStat.textContent = `${averageSum}`;
         oddEvenStat.textContent = `홀 ${averageOdd} / 짝 ${(6 - Number(averageOdd)).toFixed(1)}`;
         rangeStat.textContent = summarizeRanges(combinations);
+        updatePurchaseEstimate(combinations.length);
+        updateMatchSummary(combinations);
+    };
+
+    const updatePurchaseEstimate = (combinationCount) => {
+        const estimatedPrice = combinationCount * 1000;
+        purchaseStat.textContent = `${estimatedPrice.toLocaleString('ko-KR')}원`;
+
+        if (!budgetStatus) return;
+        const budget = Number(budgetInput?.value || 0);
+        if (!budget) {
+            budgetStatus.textContent = '예산을 입력하면 구매 금액과 비교할 수 있습니다.';
+            budgetStatus.classList.remove('warning');
+            return;
+        }
+
+        const remaining = budget - estimatedPrice;
+        if (remaining >= 0) {
+            budgetStatus.textContent = `예산 ${budget.toLocaleString('ko-KR')}원 중 ${remaining.toLocaleString('ko-KR')}원이 남습니다.`;
+            budgetStatus.classList.remove('warning');
+        } else {
+            budgetStatus.textContent = `예산을 ${Math.abs(remaining).toLocaleString('ko-KR')}원 초과합니다. 조합 수를 줄여보세요.`;
+            budgetStatus.classList.add('warning');
+        }
+    };
+
+    const updateMatchSummary = (combinations) => {
+        if (!matchSummary) return;
+        const draw = latestReferenceDraw || fallbackDraws[0];
+        const winningSet = new Set(draw.numbers);
+        const results = combinations.map((combination, index) => {
+            const matches = combination.filter((number) => winningSet.has(number));
+            const hasBonus = combination.includes(draw.bonus);
+            return { index, matches, hasBonus };
+        });
+        const best = results.reduce((currentBest, item) => {
+            if (item.matches.length > currentBest.matches.length) return item;
+            if (item.matches.length === currentBest.matches.length && item.hasBonus && !currentBest.hasBonus) return item;
+            return currentBest;
+        }, results[0]);
+
+        const matchText = best.matches.length ? `${best.matches.join(', ')} 일치` : '일치 번호 없음';
+        const bonusText = best.hasBonus ? ' / 보너스 번호 포함' : '';
+        matchSummary.innerHTML = `
+            <strong>최근 ${draw.drawNo}회와 비교</strong>
+            <span>${best.index + 1}조합: ${matchText}${bonusText}</span>
+        `;
     };
 
     const displayCombinations = (combinations) => {
@@ -333,7 +409,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const balls = document.createElement('div');
             balls.className = 'combination-balls';
-            combination.forEach((number) => balls.appendChild(createBall(number)));
+            const randomDelays = combination
+                .map((_, ballIndex) => ballIndex * 105)
+                .sort(() => Math.random() - 0.5);
+
+            combination.forEach((number, ballIndex) => {
+                const delay = index * 160 + randomDelays[ballIndex];
+                balls.appendChild(createBall(number, 'generated-ball', delay));
+            });
 
             row.append(label, balls);
             combinationsContainer.appendChild(row);
@@ -351,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             for (let index = 0; index < requestedCount; index += 1) {
-                currentCombinations.push(generateCombination());
+                currentCombinations.push(generateFilteredCombination());
             }
             displayCombinations(currentCombinations);
             copyStatus.textContent = '';
@@ -384,6 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateBtn?.addEventListener('click', generateCombinations);
     copyBtn?.addEventListener('click', copyCombinations);
+    budgetInput?.addEventListener('input', () => updatePurchaseEstimate(currentCombinations.length));
     clearSelectionBtn?.addEventListener('click', () => {
         fixedNumbers.clear();
         excludedNumbers.clear();
@@ -393,12 +477,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     reloadWinningBtn?.addEventListener('click', loadWinningNumbers);
-    drawSearchBtn?.addEventListener('click', lookupDraw);
-    drawInput?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-            lookupDraw();
-        }
-    });
 
     generateCombinations();
     loadWinningNumbers();

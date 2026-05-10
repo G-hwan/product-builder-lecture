@@ -12,7 +12,6 @@
         <a class="brand" href="index.html" aria-label="행운번호공방 홈">행운번호공방</a>
         <nav class="site-nav" aria-label="주요 메뉴">
             <a href="#generator">번호 생성</a>
-            <a href="#winning">당첨번호</a>
             <a href="#guide">구매 가이드</a>
             <a href="privacy.html">개인정보</a>
         </nav>
@@ -66,6 +65,35 @@
                         </label>
                     </div>
 
+                    <div class="filter-panel">
+                        <div class="picker-header">
+                            <h3>조합 필터</h3>
+                            <p>조건을 정하면 그 기준에 맞는 조합을 우선 생성합니다.</p>
+                        </div>
+                        <div class="filter-grid">
+                            <label class="control-field" for="odd-even-filter">
+                                <span>홀짝 비율</span>
+                                <select id="odd-even-filter">
+                                    <option value="any">상관없음</option>
+                                    <option value="3-3">홀 3 / 짝 3</option>
+                                    <option value="4-2">홀 4 / 짝 2</option>
+                                    <option value="2-4">홀 2 / 짝 4</option>
+                                </select>
+                            </label>
+                            <label class="control-field" for="range-balance-filter">
+                                <span>번호대 섞기</span>
+                                <select id="range-balance-filter">
+                                    <option value="any">상관없음</option>
+                                    <option value="balanced">골고루 섞기</option>
+                                </select>
+                            </label>
+                            <label class="check-field" for="no-consecutive-filter">
+                                <input id="no-consecutive-filter" type="checkbox">
+                                <span>연속 번호 제외</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="number-picker" aria-label="번호 선택판">
                         <div class="picker-header">
                             <h3>번호 선택</h3>
@@ -107,7 +135,17 @@
                             <dt>번호대</dt>
                             <dd id="range-stat">-</dd>
                         </div>
+                        <div>
+                            <dt>예상 구매 금액</dt>
+                            <dd id="purchase-stat">-</dd>
+                        </div>
                     </dl>
+                    <label class="budget-field" for="budget-input">
+                        <span>이번 주 예산</span>
+                        <input id="budget-input" type="number" min="0" step="1000" placeholder="예: 10000">
+                    </label>
+                    <p id="budget-status" class="status-message" role="status"></p>
+                    <div id="match-summary" class="match-summary" aria-live="polite"></div>
                     <p class="fine-print">선택 기능은 조합을 정리하기 위한 도구이며, 당첨 확률을 높인다는 의미는 아닙니다.</p>
                 </div>
             </div>
@@ -116,8 +154,8 @@
         <section id="winning" class="section-band winning-section">
             <div class="section-heading">
                 <p class="eyebrow">Winning Numbers</p>
-                <h2>로또 당첨번호 조회</h2>
-                <p>최근 7회 당첨번호와 원하는 회차의 번호를 확인할 수 있습니다. 데이터는 동행복권 공개 조회 데이터를 기준으로 불러옵니다.</p>
+                <h2>최근 당첨번호 참고</h2>
+                <p>번호 조합을 만든 뒤 이전 회차와 최근 7회 당첨번호를 가볍게 비교해볼 수 있습니다.</p>
             </div>
 
             <div class="winning-layout">
@@ -126,17 +164,10 @@
                         <h3>최근 7회 당첨번호</h3>
                         <button id="reload-winning-btn" class="button secondary" type="button">새로고침</button>
                     </div>
-                    <div id="recent-winning-list" class="winning-list loading-card">최근 당첨번호를 불러오는 중입니다.</div>
-                </div>
-
-                <div class="lookup-panel">
-                    <h3>역대 회차 조회</h3>
-                    <p class="fine-print">확인하고 싶은 회차 번호를 입력하세요.</p>
-                    <div class="lookup-form">
-                        <input id="draw-input" type="number" min="1" placeholder="예: 1100">
-                        <button id="draw-search-btn" class="button primary" type="button">조회</button>
-                    </div>
-                    <div id="draw-result" class="winning-card empty-card">회차를 입력하면 당첨번호가 표시됩니다.</div>
+                    <details class="recent-draws" open>
+                        <summary>최근 7회 펼쳐보기</summary>
+                        <div id="recent-winning-list" class="winning-list loading-card">최근 당첨번호를 불러오는 중입니다.</div>
+                    </details>
                 </div>
             </div>
         </section>
