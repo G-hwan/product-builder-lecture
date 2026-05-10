@@ -3,199 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제휴 문의 - Partnership Inquiry</title>
+    <meta name="description" content="번호연구소 운영자에게 문의, 제휴 제안, 오류 제보를 보낼 수 있는 페이지입니다.">
+    <title>문의하기 | 번호연구소</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .form-container {
-            max-width: 600px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--heading-color);
-            font-size: 0.95rem;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid rgba(20, 30, 45, 0.2);
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.5);
-            color: var(--text-color);
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--button-background);
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-group.submit {
-            margin-top: 2rem;
-        }
-
-        button[type="submit"] {
-            background-color: var(--button-background);
-            color: var(--button-text);
-            border: none;
-            padding: 0.85rem 2rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%;
-        }
-
-        button[type="submit"]:hover {
-            background-color: var(--button-hover);
-            transform: translateY(-2px);
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem 1rem;
-            background-color: var(--toggle-background);
-            border: 1px solid var(--toggle-border);
-            border-radius: 6px;
-            color: var(--toggle-text);
-            text-decoration: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: rgba(36, 116, 166, 0.1);
-        }
-
-        .required {
-            color: #e74c3c;
-        }
-    </style>
 </head>
 <body>
-    <div class="container form-container">
-        <a href="index.html" class="back-button">← 돌아가기</a>
-        
-        <div class="top-bar">
-            <h1>제휴 문의</h1>
-            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">Dark Mode</button>
+    <header class="site-header">
+        <a class="brand" href="index.html" aria-label="번호연구소 홈">번호연구소</a>
+        <nav class="site-nav" aria-label="주요 메뉴">
+            <a href="index.html#generator">번호 생성</a>
+            <a href="index.html#guide">구매 가이드</a>
+            <a href="privacy.html">개인정보</a>
+        </nav>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="다크 모드로 전환">다크 모드</button>
+    </header>
+
+    <main class="narrow-page">
+        <section class="section-band">
+            <p class="eyebrow">Contact</p>
+            <h1>문의하기</h1>
+            <p class="lead">사이트 오류, 콘텐츠 제안, 제휴 문의를 보내주세요. 광고 클릭을 유도하는 제안이나 사용자에게 오해를 줄 수 있는 협업은 받지 않습니다.</p>
+
+            <form class="contact-form" action="https://formspree.io/f/meenlnaj" method="POST">
+                <div class="form-group">
+                    <label for="category">문의 유형 <span class="required">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">선택해주세요</option>
+                        <option value="site-feedback">사이트 의견</option>
+                        <option value="bug-report">오류 제보</option>
+                        <option value="partnership">제휴 문의</option>
+                        <option value="privacy">개인정보 문의</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">이름 <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" placeholder="홍길동" autocomplete="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">이메일 <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="name@example.com" autocomplete="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">문의 내용 <span class="required">*</span></label>
+                    <textarea id="message" name="message" placeholder="문의 내용을 구체적으로 적어주세요." required></textarea>
+                </div>
+
+                <p class="fine-print">폼을 제출하면 입력한 내용이 문의 처리를 위해 Formspree로 전송됩니다. 자세한 내용은 개인정보처리방침을 확인해주세요.</p>
+                <button class="button primary full-width" type="submit">문의 보내기</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div>
+            <strong>번호연구소</strong>
+            <p>사용자에게 명확하고 유용한 정보를 제공하는 것을 우선합니다.</p>
         </div>
+        <nav aria-label="하단 메뉴">
+            <a href="index.html">홈</a>
+            <a href="privacy.html">개인정보처리방침</a>
+            <a href="terms.html">이용약관</a>
+        </nav>
+    </footer>
 
-        <form action="https://formspree.io/f/meenlnaj" method="POST">
-            <div class="form-group">
-                <label for="company">회사명 <span class="required">*</span></label>
-                <input 
-                    type="text" 
-                    id="company" 
-                    name="company" 
-                    placeholder="회사명을 입력해주세요"
-                    required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="name">담당자명 <span class="required">*</span></label>
-                <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
-                    placeholder="담당자명을 입력해주세요"
-                    required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="email">이메일 <span class="required">*</span></label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="이메일@example.com"
-                    required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="phone">전화번호</label>
-                <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="010-0000-0000"
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="message">제휴 내용 <span class="required">*</span></label>
-                <textarea 
-                    id="message" 
-                    name="message" 
-                    placeholder="제휴 관련 내용을 작성해주세요..."
-                    required
-                ></textarea>
-            </div>
-
-            <div class="form-group submit">
-                <button type="submit">문의하기</button>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        // 테마 토글 기능
-        document.addEventListener('DOMContentLoaded', () => {
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeStorageKey = 'lotto-theme';
-
-            const getInitialTheme = () => {
-                const savedTheme = localStorage.getItem(themeStorageKey);
-                if (savedTheme === 'light' || savedTheme === 'dark') {
-                    return savedTheme;
-                }
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            };
-
-            const applyTheme = (theme) => {
-                document.body.dataset.theme = theme;
-                const nextTheme = theme === 'dark' ? 'light' : 'dark';
-                themeToggle.textContent = theme === 'dark' ? 'White Mode' : 'Dark Mode';
-                themeToggle.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
-            };
-
-            applyTheme(getInitialTheme());
-
-            themeToggle.addEventListener('click', () => {
-                const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-                localStorage.setItem(themeStorageKey, nextTheme);
-                applyTheme(nextTheme);
-            });
-        });
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>
