@@ -272,8 +272,8 @@ main {
 }
 
 .number-circle {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 999px;
     display: grid;
     place-items: center;
@@ -381,22 +381,26 @@ main {
 
 .combinations-list {
     display: grid;
-    gap: 0.75rem;
-    max-height: 520px;
+    gap: 0.5rem;
+    max-height: none;
     overflow: auto;
     padding-right: 0.25rem;
 }
 
 .combination-row {
-    display: grid;
-    gap: 0.55rem;
-    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.62rem 0.7rem;
     background: var(--surface-muted);
     border-radius: var(--radius);
 }
 
 .combination-row strong {
     color: var(--heading-color);
+    min-width: 3.6rem;
+    white-space: nowrap;
 }
 
 .winning-layout {
@@ -693,9 +697,14 @@ textarea:focus {
     }
 
     .number-circle {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         font-size: 0.9rem;
+    }
+
+    .combination-row {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .hero-actions .button,
