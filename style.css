@@ -199,8 +199,7 @@ main {
 .hero-note,
 .tool-panel,
 .insight-panel,
-.info-card,
-.contact-form {
+.info-card {
     background: var(--surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -362,13 +361,6 @@ details p {
 .narrow-page {
     width: min(820px, calc(100% - 2rem));
     margin: 0 auto;
-}
-
-.contact-form {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: clamp(1rem, 3vw, 1.5rem);
 }
 
 .form-group {
