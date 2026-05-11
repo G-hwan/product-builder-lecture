@@ -425,6 +425,18 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStats(combinations);
     };
 
+    const showEmptyGeneratorState = () => {
+        if (!combinationsContainer) return;
+        combinationsContainer.innerHTML = '<p class="empty-card">조합 생성 버튼을 누르면 행운 번호가 만들어집니다.</p>';
+        comboCountStat.textContent = '-';
+        sumStat.textContent = '-';
+        oddEvenStat.textContent = '-';
+        rangeStat.textContent = '-';
+        purchaseStat.textContent = '-';
+        budgetStatus.textContent = '예산을 입력하면 구매 금액과 비교할 수 있습니다.';
+        matchSummary.innerHTML = '';
+    };
+
     const generateCombinations = () => {
         if (!generateBtn || !combinationsContainer) return;
 
@@ -478,6 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reloadWinningBtn?.addEventListener('click', loadWinningNumbers);
 
-    generateCombinations();
+    showEmptyGeneratorState();
     loadWinningNumbers();
 });
