@@ -1,4 +1,13 @@
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
     const themeToggle = document.getElementById('theme-toggle');
     const themeStorageKey = 'lotto-theme';
 

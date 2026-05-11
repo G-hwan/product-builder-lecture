@@ -20,3 +20,7 @@
 - Added an empty result message telling the user to press the generation button.
 - The combination stats and match summary now stay blank until the user clicks `조합 생성`.
 
+### Initial Scroll Position Update
+
+- Added startup scroll handling so the page opens from the top hero section instead of restoring a previous generator-section position.
+- Existing in-page navigation still works after the page has loaded.
