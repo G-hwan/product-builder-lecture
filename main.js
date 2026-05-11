@@ -69,6 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCombinations = [];
     let latestReferenceDraw = null;
 
+    document.querySelectorAll('.button').forEach((button) => {
+        button.addEventListener('click', () => {
+            button.classList.remove('clicked');
+            void button.offsetWidth;
+            button.classList.add('clicked');
+        });
+
+        button.addEventListener('animationend', () => {
+            button.classList.remove('clicked');
+        });
+    });
+
     const allNumbers = Array.from({ length: 45 }, (_, index) => index + 1);
     const fallbackDraws = [
         { drawNo: 1223, date: '2026-05-09', numbers: [16, 18, 20, 32, 33, 39], bonus: 26 },
@@ -174,8 +186,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadWinningNumbers = async () => {
         if (!latestWinning || !recentWinningList) return;
 
-        latestWinning.textContent = '당첨번호를 불러오는 중입니다.';
-        recentWinningList.textContent = '최근 당첨번호를 불러오는 중입니다.';
+        latestReferenceDraw = fallbackDraws[0];
+        latestWinning.innerHTML = '';
+        latestWinning.appendChild(renderWinningCard(fallbackDraws[0]));
+
+        recentWinningList.innerHTML = '';
+        fallbackDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
+
+        if (currentCombinations.length) {
+            updateMatchSummary(currentCombinations);
+        }
 
         try {
             const latestDraw = await findLatestDraw();
@@ -194,20 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateMatchSummary(currentCombinations);
             }
         } catch (error) {
-            latestReferenceDraw = fallbackDraws[0];
-            latestWinning.innerHTML = '';
-            latestWinning.appendChild(renderWinningCard(fallbackDraws[0]));
-
-            recentWinningList.innerHTML = '';
-            fallbackDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
-
             const notice = document.createElement('p');
             notice.className = 'fine-print';
-            notice.textContent = '실시간 조회가 차단되어 내장된 최근 7회 데이터를 표시하고 있습니다.';
+            notice.textContent = '실시간 조회가 지연되어 내장된 최근 7회 데이터를 표시하고 있습니다.';
             recentWinningList.appendChild(notice);
-            if (currentCombinations.length) {
-                updateMatchSummary(currentCombinations);
-            }
         }
     };
 
@@ -487,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await navigator.clipboard.writeText(text);
-            copyStatus.textContent = '생성한 조합을 모두 복사했습니다.';
+            copyStatus.innerHTML = '생성한 조합을 모두 복사했습니다.<br>메모장, 카카오톡, 엑셀 등에 바로 붙여넣을 수 있습니다.';
         } catch {
             copyStatus.textContent = text;
         }

@@ -103,6 +103,7 @@ a {
 
 .theme-toggle,
 .button {
+    position: relative;
     min-height: 44px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -142,6 +143,52 @@ a {
 .button:hover,
 .theme-toggle:hover {
     transform: translateY(-1px);
+}
+
+.button[data-tooltip]::after,
+.button[data-tooltip]::before {
+    left: 50%;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    transform: translate(-50%, 0.35rem);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 20;
+}
+
+.button[data-tooltip]::before {
+    content: "";
+    bottom: calc(100% + 0.35rem);
+    border: 6px solid transparent;
+    border-top-color: var(--heading-color);
+}
+
+.button[data-tooltip]::after {
+    content: attr(data-tooltip);
+    bottom: calc(100% + 0.95rem);
+    width: max-content;
+    max-width: min(260px, 82vw);
+    padding: 0.45rem 0.6rem;
+    background: var(--heading-color);
+    border-radius: 6px;
+    color: var(--surface);
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+}
+
+.button[data-tooltip]:hover::after,
+.button[data-tooltip]:hover::before,
+.button[data-tooltip]:focus-visible::after,
+.button[data-tooltip]:focus-visible::before {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.button.clicked {
+    animation: button-click-pulse 0.34s ease;
 }
 
 .button.primary:hover {
@@ -714,11 +761,29 @@ main {
     }
 }
 
+@keyframes button-click-pulse {
+    0% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(214, 168, 79, 0.34);
+    }
+
+    42% {
+        transform: translateY(1px) scale(0.97);
+        box-shadow: 0 0 0 8px rgba(214, 168, 79, 0.14);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(214, 168, 79, 0);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .number-circle,
     .generated-ball,
     .generated-ball::before,
-    .generated-ball::after {
+    .generated-ball::after,
+    .button.clicked {
         animation: none;
         opacity: 1;
         transform: none;

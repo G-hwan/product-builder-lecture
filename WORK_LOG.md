@@ -66,3 +66,21 @@
 - Changed `선택 초기화` so it only clears fixed and excluded number selections.
 - Existing generated combinations now stay visible instead of being regenerated.
 - Added a status message explaining that new numbers are created with the `조합 생성` button.
+
+### Winning Number Perceived Speed Update
+
+- Changed winning-number loading to render built-in fallback draw data immediately.
+- Live lottery API data now updates the cards afterward if the request succeeds.
+- This avoids showing a loading message while waiting for a slow or blocked external request.
+
+### Copy Button Label Update
+
+- Renamed the copy button from `전체 복사` to `생성 결과 복사`.
+- Removed the always-visible copy helper text from the initial generator view.
+- Updated the copy success message to explain that copied combinations can be pasted into memo apps, chat, or spreadsheets.
+
+### Button Tooltip And Click Feedback Update
+
+- Added hover/focus tooltip text to the generator action buttons.
+- Added a short click pulse animation to buttons so button presses feel responsive.
+- Respected reduced-motion preferences by disabling the click animation when requested.
