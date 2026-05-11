@@ -38,6 +38,7 @@ body[data-theme="dark"] {
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 96px;
 }
 
 body {
@@ -49,6 +50,7 @@ body {
     color: var(--text-color);
     font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
     line-height: 1.7;
+    overflow-x: hidden;
     transition: background-color 0.25s ease, color 0.25s ease;
 }
 
@@ -272,11 +274,17 @@ main {
 }
 
 .numbers-container,
-.combination-balls,
-.winning-balls {
+.combination-balls {
     display: grid;
     grid-template-columns: repeat(6, minmax(34px, 44px));
     gap: 0.75rem;
+    align-items: center;
+}
+
+.winning-balls {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(28px, 40px));
+    gap: 0.55rem;
     align-items: center;
 }
 
@@ -475,6 +483,10 @@ main {
     background: var(--accent-soft);
     border-radius: var(--radius);
     color: var(--heading-color);
+}
+
+.match-summary:empty {
+    display: none;
 }
 
 .match-summary strong {
@@ -864,6 +876,7 @@ textarea:focus {
     .site-header {
         align-items: flex-start;
         flex-wrap: wrap;
+        gap: 0.7rem;
     }
 
     .site-nav {
@@ -872,6 +885,12 @@ textarea:focus {
         justify-content: flex-start;
         overflow-x: auto;
         padding-bottom: 0.1rem;
+        scrollbar-width: none;
+        white-space: nowrap;
+    }
+
+    .site-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .hero,
@@ -884,6 +903,15 @@ textarea:focus {
     .hero {
         min-height: auto;
         padding-top: 2.5rem;
+        align-items: start;
+    }
+
+    .tool-panel,
+    .insight-panel,
+    .history-panel,
+    .winning-preview,
+    .info-card {
+        box-shadow: 0 10px 24px rgba(63, 48, 24, 0.1);
     }
 
     .number-grid {
@@ -900,17 +928,65 @@ textarea:focus {
 }
 
 @media (max-width: 520px) {
+    html {
+        scroll-padding-top: 118px;
+    }
+
     .site-header {
-        padding: 0.85rem 1rem;
+        padding: 0.75rem 0.85rem;
+    }
+
+    .brand {
+        font-size: 1.05rem;
+    }
+
+    .site-nav {
+        gap: 0.95rem;
+        font-size: 0.9rem;
     }
 
     .theme-toggle {
         width: auto;
+        min-height: 40px;
+        padding: 0.45rem 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .section-band {
+        width: min(100% - 1rem, 1120px);
+        padding: 1.75rem 0;
+    }
+
+    .hero {
+        gap: 1rem;
+        padding-top: 1.5rem;
     }
 
     .hero-copy h1,
     .narrow-page h1 {
-        font-size: 2.35rem;
+        font-size: 2.05rem;
+        line-height: 1.14;
+    }
+
+    .lead,
+    .section-heading p,
+    .article-body p,
+    .policy-body p {
+        font-size: 0.98rem;
+    }
+
+    .section-heading h2,
+    .article-body h2,
+    .policy-body h2 {
+        font-size: 1.65rem;
+    }
+
+    .winning-preview,
+    .tool-panel,
+    .insight-panel,
+    .history-panel,
+    details {
+        padding: 0.85rem;
     }
 
     .numbers-container {
@@ -931,18 +1007,64 @@ textarea:focus {
     }
 
     .number-circle {
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
         font-size: 0.9rem;
+    }
+
+    .combination-balls {
+        grid-template-columns: repeat(6, minmax(30px, 34px));
+        gap: 0.4rem;
+    }
+
+    .winning-balls {
+        grid-template-columns: repeat(4, minmax(34px, 1fr));
+        gap: 0.5rem;
     }
 
     .combination-row {
         align-items: flex-start;
         flex-direction: column;
+        padding: 0.7rem;
     }
 
     .hero-actions .button,
     .tool-actions .button {
         width: 100%;
+    }
+
+    .stats-list div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .stats-list dd {
+        text-align: left;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-copy h1,
+    .narrow-page h1 {
+        font-size: 1.85rem;
+    }
+
+    .number-grid {
+        gap: 0.35rem;
+    }
+
+    .pick-number {
+        font-size: 0.92rem;
+    }
+
+    .combination-balls {
+        grid-template-columns: repeat(6, minmax(28px, 32px));
+    }
+
+    .number-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.84rem;
     }
 }

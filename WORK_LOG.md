@@ -24,3 +24,10 @@
 
 - Added startup scroll handling so the page opens from the top hero section instead of restoring a previous generator-section position.
 - Existing in-page navigation still works after the page has loaded.
+
+### Mobile Layout Update
+
+- Improved small-screen spacing for the sticky header, hero, panels, and action buttons.
+- Adjusted winning-number and generated-number ball grids so they fit more predictably on narrow screens.
+- Added wrapping behavior for stats rows to avoid cramped text on mobile.
+- Hid the empty match-summary block until combinations are generated.
