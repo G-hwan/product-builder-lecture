@@ -96,22 +96,31 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const fetchDraw = async (drawNo) => {
-        const response = await fetch(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`);
-        if (!response.ok) {
-            throw new Error('당첨번호 데이터를 불러오지 못했습니다.');
-        }
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 4500);
 
-        const data = await response.json();
-        if (data.returnValue !== 'success') {
-            throw new Error('아직 발표되지 않은 회차입니다.');
-        }
+        try {
+            const response = await fetch(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`, {
+                signal: controller.signal
+            });
+            if (!response.ok) {
+                throw new Error('당첨번호 데이터를 불러오지 못했습니다.');
+            }
 
-        return {
-            drawNo: data.drwNo,
-            date: data.drwNoDate,
-            numbers: [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6],
-            bonus: data.bnusNo
-        };
+            const data = await response.json();
+            if (data.returnValue !== 'success') {
+                throw new Error('아직 발표되지 않은 회차입니다.');
+            }
+
+            return {
+                drawNo: data.drwNo,
+                date: data.drwNoDate,
+                numbers: [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6],
+                bonus: data.bnusNo
+            };
+        } finally {
+            window.clearTimeout(timeoutId);
+        }
     };
 
     const findLatestDraw = async () => {
@@ -119,7 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let attempt = 0; attempt < 12; attempt += 1) {
             try {
                 return await fetchDraw(drawNo);
-            } catch {
+            } catch (error) {
+                if (error.message !== '아직 발표되지 않은 회차입니다.') {
+                    throw error;
+                }
                 drawNo -= 1;
             }
         }
@@ -494,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
         excludedNumbers.clear();
         renderNumberGrid();
         updateSelectionSummary();
-        generateCombinations();
+        copyStatus.textContent = '선택한 고정/제외 번호만 초기화했습니다. 새 번호는 조합 생성 버튼을 눌러 만들어주세요.';
     });
 
     reloadWinningBtn?.addEventListener('click', loadWinningNumbers);

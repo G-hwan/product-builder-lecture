@@ -31,3 +31,38 @@
 - Adjusted winning-number and generated-number ball grids so they fit more predictably on narrow screens.
 - Added wrapping behavior for stats rows to avoid cramped text on mobile.
 - Hid the empty match-summary block until combinations are generated.
+
+### Winning Number Loading Update
+
+- Added a timeout to the external lotto winning-number request.
+- If the external request is blocked or times out, the page now switches to the built-in fallback draw data instead of staying on the loading message.
+- Future unpublished draw numbers are still skipped while searching for the latest available draw.
+
+### Winning Card Overflow Fix
+
+- Changed winning-number balls from a fixed eight-column grid to a wrapping flex layout.
+- Adjusted the winning-card title row so the draw number and date stay inside the card.
+- This prevents the bonus ball from spilling outside the latest-draw preview panel.
+
+### Winning Card Ball Layout Update
+
+- Updated the winning-number card to show all six regular numbers on the first row.
+- The plus sign and bonus number now appear on the next row.
+- Added a narrower mobile rule so this layout still fits on very small screens.
+
+### Winning Card Column Width Update
+
+- Changed the winning-number grid columns to fill the card width evenly on desktop.
+- Centered each ball and the plus sign inside its grid column.
+- Kept responsive minimum column widths for mobile screens.
+
+### Recent Winning List Spacing Fix
+
+- Restored compact spacing for the recent seven-draw winning-number list.
+- Kept the wider evenly spaced layout only for the latest-draw preview card.
+
+### Clear Selection Behavior Update
+
+- Changed `선택 초기화` so it only clears fixed and excluded number selections.
+- Existing generated combinations now stay visible instead of being regenerated.
+- Added a status message explaining that new numbers are created with the `조합 생성` button.

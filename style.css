@@ -283,9 +283,16 @@ main {
 
 .winning-balls {
     display: grid;
-    grid-template-columns: repeat(8, minmax(28px, 40px));
+    grid-template-columns: repeat(6, 40px);
     gap: 0.55rem;
     align-items: center;
+    justify-content: start;
+}
+
+.winning-preview .winning-balls {
+    grid-template-columns: repeat(6, minmax(34px, 1fr));
+    justify-content: stretch;
+    width: 100%;
 }
 
 .number-circle {
@@ -302,6 +309,7 @@ main {
     position: relative;
     transform: scale(0.88);
     animation: pop-in 0.28s ease forwards;
+    justify-self: center;
 }
 
 .number-circle::after {
@@ -346,6 +354,7 @@ main {
     color: var(--muted-text);
     font-weight: 900;
     text-align: center;
+    justify-self: center;
 }
 
 .control-grid {
@@ -562,10 +571,12 @@ main {
     padding: 1rem;
     background: var(--surface-muted);
     border-radius: var(--radius);
+    min-width: 0;
 }
 
 .winning-title {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
@@ -579,6 +590,10 @@ main {
 .empty-card,
 .loading-card {
     color: var(--muted-text);
+}
+
+.winning-title span {
+    text-align: right;
 }
 
 .lookup-form {
@@ -1018,8 +1033,12 @@ textarea:focus {
     }
 
     .winning-balls {
-        grid-template-columns: repeat(4, minmax(34px, 1fr));
-        gap: 0.5rem;
+        grid-template-columns: repeat(6, 34px);
+        gap: 0.45rem;
+    }
+
+    .winning-preview .winning-balls {
+        grid-template-columns: repeat(6, minmax(30px, 1fr));
     }
 
     .combination-row {
@@ -1060,6 +1079,15 @@ textarea:focus {
 
     .combination-balls {
         grid-template-columns: repeat(6, minmax(28px, 32px));
+    }
+
+    .winning-balls {
+        grid-template-columns: repeat(6, 32px);
+        gap: 0.4rem;
+    }
+
+    .winning-preview .winning-balls {
+        grid-template-columns: repeat(6, minmax(28px, 1fr));
     }
 
     .number-circle {
