@@ -418,6 +418,64 @@ main {
     border-radius: var(--radius);
 }
 
+.theme-panel {
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--surface) 72%, var(--accent-soft) 28%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.theme-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+
+.theme-choice {
+    min-height: 88px;
+    padding: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-color);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.theme-choice strong,
+.theme-choice span {
+    display: block;
+}
+
+.theme-choice strong {
+    color: var(--heading-color);
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.theme-choice span {
+    margin-top: 0.25rem;
+    color: var(--muted-text);
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+.theme-choice:hover,
+.theme-choice:focus-visible,
+.theme-choice.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.theme-status {
+    margin-bottom: 0;
+}
+
 .filter-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1075,6 +1133,7 @@ textarea:focus {
 
     .control-grid,
     .filter-grid,
+    .theme-choice-grid,
     .lookup-form {
         grid-template-columns: 1fr;
     }

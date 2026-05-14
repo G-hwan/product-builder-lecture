@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const oddEvenFilter = document.getElementById('odd-even-filter');
     const rangeBalanceFilter = document.getElementById('range-balance-filter');
     const noConsecutiveFilter = document.getElementById('no-consecutive-filter');
+    const themeChoices = document.querySelectorAll('.theme-choice');
+    const themeStatus = document.getElementById('theme-status');
     const latestWinning = document.getElementById('latest-winning');
     const recentWinningList = document.getElementById('recent-winning-list');
     const reloadWinningBtn = document.getElementById('reload-winning-btn');
@@ -73,6 +75,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const allNumbers = Array.from({ length: 45 }, (_, index) => index + 1);
+    const themePresets = {
+        calm: {
+            label: '차분한 집중',
+            mode: 'balanced',
+            oddEven: 'any',
+            rangeBalance: 'balanced',
+            noConsecutive: false,
+            message: '차분한 집중 테마를 적용했습니다. 여러 번호대에 고르게 퍼진 조합을 만들기 좋습니다.'
+        },
+        fresh: {
+            label: '가벼운 시작',
+            mode: 'low',
+            oddEven: 'any',
+            rangeBalance: 'any',
+            noConsecutive: false,
+            message: '가벼운 시작 테마를 적용했습니다. 낮은 번호가 조금 더 보이도록 구성합니다.'
+        },
+        bold: {
+            label: '또렷한 도전',
+            mode: 'high',
+            oddEven: 'any',
+            rangeBalance: 'any',
+            noConsecutive: false,
+            message: '또렷한 도전 테마를 적용했습니다. 높은 번호가 포함되기 쉬운 조합으로 정리합니다.'
+        },
+        steady: {
+            label: '고른 균형',
+            mode: 'balanced',
+            oddEven: '3-3',
+            rangeBalance: 'balanced',
+            noConsecutive: true,
+            message: '고른 균형 테마를 적용했습니다. 홀짝과 번호대가 정돈된 조합을 만들기 좋습니다.'
+        }
+    };
     const fallbackDraws = [
         { drawNo: 1223, date: '2026-05-09', numbers: [16, 18, 20, 32, 33, 39], bonus: 26 },
         { drawNo: 1222, date: '2026-05-02', numbers: [4, 11, 17, 22, 32, 41], bonus: 34 },
@@ -245,6 +281,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const randomItem = (items) => items[Math.floor(Math.random() * items.length)];
+
+    const applyThemePreset = (presetKey) => {
+        const preset = themePresets[presetKey];
+        if (!preset) return;
+
+        if (quickModeSelect) quickModeSelect.value = preset.mode;
+        if (oddEvenFilter) oddEvenFilter.value = preset.oddEven;
+        if (rangeBalanceFilter) rangeBalanceFilter.value = preset.rangeBalance;
+        if (noConsecutiveFilter) noConsecutiveFilter.checked = preset.noConsecutive;
+
+        themeChoices.forEach((choice) => {
+            const isActive = choice.dataset.themePreset === presetKey;
+            choice.classList.toggle('active', isActive);
+            choice.setAttribute('aria-pressed', String(isActive));
+        });
+
+        if (themeStatus) {
+            themeStatus.textContent = `${preset.message} 테마는 분위기를 정하는 기능이며 당첨을 예측하지 않습니다.`;
+        }
+    };
 
     const getCandidatePool = () => {
         const mode = quickModeSelect?.value || 'balanced';
@@ -467,6 +523,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNumberGrid();
         updateSelectionSummary();
     }
+
+    themeChoices.forEach((choice) => {
+        choice.setAttribute('aria-pressed', choice.classList.contains('active') ? 'true' : 'false');
+        choice.addEventListener('click', () => applyThemePreset(choice.dataset.themePreset));
+    });
 
     generateBtn?.addEventListener('click', generateCombinations);
     copyBtn?.addEventListener('click', copyCombinations);
