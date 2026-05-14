@@ -2,33 +2,33 @@
 @import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap");
 
 :root {
-    --page-background: #f7f1e5;
-    --surface: #fffaf0;
-    --surface-muted: #eee2c8;
-    --text-color: #20382e;
-    --muted-text: #637469;
-    --heading-color: #0f2e25;
-    --border-color: #dccba6;
-    --accent: #b98a32;
-    --accent-dark: #8d6822;
-    --accent-soft: #f0dfb5;
-    --warning-soft: #fff4d4;
-    --shadow: 0 14px 34px rgba(63, 48, 24, 0.12);
+    --page-background: #f6f8fb;
+    --surface: #ffffff;
+    --surface-muted: #edf3f5;
+    --text-color: #24323d;
+    --muted-text: #5c6b76;
+    --heading-color: #172631;
+    --border-color: #d7e1e6;
+    --accent: #1d8a8a;
+    --accent-dark: #126b6d;
+    --accent-soft: #d8f0ef;
+    --warning-soft: #fff1d8;
+    --shadow: 0 14px 34px rgba(20, 45, 58, 0.12);
     --radius: 8px;
 }
 
 body[data-theme="dark"] {
-    --page-background: #0f2e25;
-    --surface: #163d32;
-    --surface-muted: #1d4a3e;
-    --text-color: #f6f1e7;
-    --muted-text: #d4c8ad;
-    --heading-color: #fff9ec;
-    --border-color: #375f50;
-    --accent: #d6a84f;
-    --accent-dark: #f0c76a;
-    --accent-soft: #314f34;
-    --warning-soft: #3d331c;
+    --page-background: #101b24;
+    --surface: #172632;
+    --surface-muted: #213542;
+    --text-color: #edf5f6;
+    --muted-text: #b7c7cf;
+    --heading-color: #ffffff;
+    --border-color: #314754;
+    --accent: #4fbfc0;
+    --accent-dark: #82d8d7;
+    --accent-soft: #173f45;
+    --warning-soft: #3e3220;
     --shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
 }
 
@@ -45,8 +45,8 @@ body {
     min-height: 100vh;
     margin: 0;
     background:
-        radial-gradient(circle at top left, rgba(214, 168, 79, 0.14), transparent 30rem),
-        linear-gradient(135deg, var(--page-background), color-mix(in srgb, var(--page-background) 82%, var(--accent) 18%));
+        radial-gradient(circle at top left, rgba(29, 138, 138, 0.12), transparent 30rem),
+        linear-gradient(135deg, var(--page-background), color-mix(in srgb, var(--page-background) 88%, var(--accent) 12%));
     color: var(--text-color);
     font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
     line-height: 1.7;

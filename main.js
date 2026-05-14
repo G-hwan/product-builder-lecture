@@ -13,16 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getInitialTheme = () => {
         const savedTheme = localStorage.getItem(themeStorageKey);
-        if (savedTheme === 'light' || savedTheme === 'dark') {
-            return savedTheme;
-        }
+        if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     };
 
     const applyTheme = (theme) => {
         document.body.dataset.theme = theme;
         if (!themeToggle) return;
-
         const nextTheme = theme === 'dark' ? 'light' : 'dark';
         themeToggle.textContent = theme === 'dark' ? '라이트 모드' : '다크 모드';
         themeToggle.setAttribute('aria-label', `${nextTheme === 'dark' ? '다크' : '라이트'} 모드로 전환`);
@@ -30,13 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyTheme(getInitialTheme());
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem(themeStorageKey, nextTheme);
-            applyTheme(nextTheme);
-        });
-    }
+    themeToggle?.addEventListener('click', () => {
+        const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(themeStorageKey, nextTheme);
+        applyTheme(nextTheme);
+    });
 
     const numberGrid = document.getElementById('number-grid');
     const combinationsContainer = document.getElementById('numbers');
@@ -59,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const oddEvenFilter = document.getElementById('odd-even-filter');
     const rangeBalanceFilter = document.getElementById('range-balance-filter');
     const noConsecutiveFilter = document.getElementById('no-consecutive-filter');
-
     const latestWinning = document.getElementById('latest-winning');
     const recentWinningList = document.getElementById('recent-winning-list');
     const reloadWinningBtn = document.getElementById('reload-winning-btn');
@@ -75,10 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             void button.offsetWidth;
             button.classList.add('clicked');
         });
-
-        button.addEventListener('animationend', () => {
-            button.classList.remove('clicked');
-        });
+        button.addEventListener('animationend', () => button.classList.remove('clicked'));
     });
 
     const allNumbers = Array.from({ length: 45 }, (_, index) => index + 1);
@@ -115,14 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`, {
                 signal: controller.signal
             });
-            if (!response.ok) {
-                throw new Error('당첨번호 데이터를 불러오지 못했습니다.');
-            }
+            if (!response.ok) throw new Error('당첨번호 데이터를 불러오지 못했습니다.');
 
             const data = await response.json();
-            if (data.returnValue !== 'success') {
-                throw new Error('아직 발표되지 않은 회차입니다.');
-            }
+            if (data.returnValue !== 'success') throw new Error('아직 발표되지 않은 회차입니다.');
 
             return {
                 drawNo: data.drwNo,
@@ -141,9 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 return await fetchDraw(drawNo);
             } catch (error) {
-                if (error.message !== '아직 발표되지 않은 회차입니다.') {
-                    throw error;
-                }
+                if (error.message !== '아직 발표되지 않은 회차입니다.') throw error;
                 drawNo -= 1;
             }
         }
@@ -155,9 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ball.className = `number-circle ${extraClass}`.trim();
         ball.textContent = number;
         ball.style.backgroundColor = getColor(number);
-        if (delay > 0) {
-            ball.style.animationDelay = `${delay}ms`;
-        }
+        if (delay > 0) ball.style.animationDelay = `${delay}ms`;
         return ball;
     };
 
@@ -193,9 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         recentWinningList.innerHTML = '';
         fallbackDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
 
-        if (currentCombinations.length) {
-            updateMatchSummary(currentCombinations);
-        }
+        if (currentCombinations.length) updateMatchSummary(currentCombinations);
 
         try {
             const latestDraw = await findLatestDraw();
@@ -210,13 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
             recentWinningList.innerHTML = '';
             recentDraws.forEach((draw) => recentWinningList.appendChild(renderWinningCard(draw)));
 
-            if (currentCombinations.length) {
-                updateMatchSummary(currentCombinations);
-            }
-        } catch (error) {
+            if (currentCombinations.length) updateMatchSummary(currentCombinations);
+        } catch {
             const notice = document.createElement('p');
             notice.className = 'fine-print';
-            notice.textContent = '실시간 조회가 지연되어 내장된 최근 7회 데이터를 표시하고 있습니다.';
+            notice.textContent = '실시간 조회가 지연되어 저장된 최근 참고 데이터를 표시하고 있습니다.';
             recentWinningList.appendChild(notice);
         }
     };
@@ -224,8 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateSelectionSummary = () => {
         const fixed = Array.from(fixedNumbers).sort((a, b) => a - b);
         const excluded = Array.from(excludedNumbers).sort((a, b) => a - b);
-        fixedSummary.textContent = fixed.length ? fixed.join(', ') : '없음';
-        excludedSummary.textContent = excluded.length ? excluded.join(', ') : '없음';
+        if (fixedSummary) fixedSummary.textContent = fixed.length ? fixed.join(', ') : '없음';
+        if (excludedSummary) excludedSummary.textContent = excluded.length ? excluded.join(', ') : '없음';
     };
 
     const renderNumberGrid = () => {
@@ -245,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('click', () => {
                 if (!fixedNumbers.has(number) && !excludedNumbers.has(number)) {
                     if (fixedNumbers.size >= 6) {
-                        copyStatus.textContent = '고정 번호는 최대 6개까지 선택할 수 있습니다.';
+                        if (copyStatus) copyStatus.textContent = '고정 번호는 최대 6개까지 선택할 수 있습니다.';
                         return;
                     }
                     fixedNumbers.add(number);
@@ -256,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     excludedNumbers.delete(number);
                 }
 
-                copyStatus.textContent = '';
+                if (copyStatus) copyStatus.textContent = '';
                 renderNumberGrid();
                 updateSelectionSummary();
             });
@@ -285,9 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         while (selected.length < 6 && guard < 400) {
             const candidate = randomItem(pool);
-            if (candidate && !selected.includes(candidate) && !excludedNumbers.has(candidate)) {
-                selected.push(candidate);
-            }
+            if (candidate && !selected.includes(candidate) && !excludedNumbers.has(candidate)) selected.push(candidate);
             guard += 1;
         }
 
@@ -299,10 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        if (selected.length < 6) {
-            throw new Error('선택 조건이 너무 많아 조합을 만들 수 없습니다.');
-        }
-
+        if (selected.length < 6) throw new Error('선택 조건이 너무 많아 조합을 만들 수 없습니다.');
         return selected.sort((a, b) => a - b);
     };
 
@@ -338,17 +312,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const generateFilteredCombination = () => {
-        let fallback = null;
-
         for (let attempt = 0; attempt < 700; attempt += 1) {
             const combination = generateCombination();
-            fallback = combination;
-            if (passesFilters(combination)) {
-                return combination;
-            }
+            if (passesFilters(combination)) return combination;
         }
-
-        throw new Error('조건에 맞는 조합을 만들기 어렵습니다. 필터를 조금 완화해주세요.');
+        throw new Error('조건에 맞는 조합을 만들기 어렵습니다. 필터를 조금 완화해 주세요.');
     };
 
     const summarizeRanges = (combinations) => {
@@ -361,36 +329,17 @@ document.addEventListener('DOMContentLoaded', () => {
             { label: '41~45', count: flat.filter((number) => number >= 41).length }
         ];
 
-        return counts
-            .filter((range) => range.count > 0)
-            .map((range) => `${range.label} ${range.count}개`)
-            .join(', ');
-    };
-
-    const updateStats = (combinations) => {
-        if (!combinations.length) return;
-
-        const sums = combinations.map((combo) => combo.reduce((total, number) => total + number, 0));
-        const oddCounts = combinations.map((combo) => combo.filter((number) => number % 2 === 1).length);
-        const averageSum = Math.round(sums.reduce((total, sum) => total + sum, 0) / sums.length);
-        const averageOdd = (oddCounts.reduce((total, count) => total + count, 0) / oddCounts.length).toFixed(1);
-
-        comboCountStat.textContent = `${combinations.length}개`;
-        sumStat.textContent = `${averageSum}`;
-        oddEvenStat.textContent = `홀 ${averageOdd} / 짝 ${(6 - Number(averageOdd)).toFixed(1)}`;
-        rangeStat.textContent = summarizeRanges(combinations);
-        updatePurchaseEstimate(combinations.length);
-        updateMatchSummary(combinations);
+        return counts.filter((range) => range.count > 0).map((range) => `${range.label} ${range.count}개`).join(', ');
     };
 
     const updatePurchaseEstimate = (combinationCount) => {
         const estimatedPrice = combinationCount * 1000;
-        purchaseStat.textContent = `${estimatedPrice.toLocaleString('ko-KR')}원`;
+        if (purchaseStat) purchaseStat.textContent = `${estimatedPrice.toLocaleString('ko-KR')}원`;
 
         if (!budgetStatus) return;
         const budget = Number(budgetInput?.value || 0);
         if (!budget) {
-            budgetStatus.textContent = '예산을 입력하면 구매 금액과 비교할 수 있습니다.';
+            budgetStatus.textContent = '예산을 입력하면 예상 구매 금액과 비교할 수 있습니다.';
             budgetStatus.classList.remove('warning');
             return;
         }
@@ -406,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateMatchSummary = (combinations) => {
-        if (!matchSummary) return;
+        if (!matchSummary || !combinations.length) return;
         const draw = latestReferenceDraw || fallbackDraws[0];
         const winningSet = new Set(draw.numbers);
         const results = combinations.map((combination, index) => {
@@ -423,12 +372,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const matchText = best.matches.length ? `${best.matches.join(', ')} 일치` : '일치 번호 없음';
         const bonusText = best.hasBonus ? ' / 보너스 번호 포함' : '';
         matchSummary.innerHTML = `
-            <strong>최근 ${draw.drawNo}회와 비교</strong>
+            <strong>최근 ${draw.drawNo}회차 비교</strong>
             <span>${best.index + 1}조합: ${matchText}${bonusText}</span>
         `;
     };
 
+    const updateStats = (combinations) => {
+        if (!combinations.length) return;
+
+        const sums = combinations.map((combo) => combo.reduce((total, number) => total + number, 0));
+        const oddCounts = combinations.map((combo) => combo.filter((number) => number % 2 === 1).length);
+        const averageSum = Math.round(sums.reduce((total, sum) => total + sum, 0) / sums.length);
+        const averageOdd = (oddCounts.reduce((total, count) => total + count, 0) / oddCounts.length).toFixed(1);
+
+        if (comboCountStat) comboCountStat.textContent = `${combinations.length}개`;
+        if (sumStat) sumStat.textContent = `${averageSum}`;
+        if (oddEvenStat) oddEvenStat.textContent = `홀 ${averageOdd} / 짝 ${(6 - Number(averageOdd)).toFixed(1)}`;
+        if (rangeStat) rangeStat.textContent = summarizeRanges(combinations);
+        updatePurchaseEstimate(combinations.length);
+        updateMatchSummary(combinations);
+    };
+
     const displayCombinations = (combinations) => {
+        if (!combinationsContainer) return;
         combinationsContainer.innerHTML = '';
 
         combinations.forEach((combination, index) => {
@@ -440,9 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const balls = document.createElement('div');
             balls.className = 'combination-balls';
-            const randomDelays = combination
-                .map((_, ballIndex) => ballIndex * 105)
-                .sort(() => Math.random() - 0.5);
+            const randomDelays = combination.map((_, ballIndex) => ballIndex * 105).sort(() => Math.random() - 0.5);
 
             combination.forEach((number, ballIndex) => {
                 const delay = index * 160 + randomDelays[ballIndex];
@@ -458,21 +422,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const showEmptyGeneratorState = () => {
         if (!combinationsContainer) return;
-        combinationsContainer.innerHTML = '<p class="empty-card">조합 생성 버튼을 누르면 행운 번호가 만들어집니다.</p>';
-        comboCountStat.textContent = '-';
-        sumStat.textContent = '-';
-        oddEvenStat.textContent = '-';
-        rangeStat.textContent = '-';
-        purchaseStat.textContent = '-';
-        budgetStatus.textContent = '예산을 입력하면 구매 금액과 비교할 수 있습니다.';
-        matchSummary.innerHTML = '';
+        combinationsContainer.innerHTML = '<p class="empty-card">조합 생성 버튼을 누르면 번호가 표시됩니다.</p>';
+        if (comboCountStat) comboCountStat.textContent = '-';
+        if (sumStat) sumStat.textContent = '-';
+        if (oddEvenStat) oddEvenStat.textContent = '-';
+        if (rangeStat) rangeStat.textContent = '-';
+        if (purchaseStat) purchaseStat.textContent = '-';
+        if (budgetStatus) budgetStatus.textContent = '예산을 입력하면 예상 구매 금액과 비교할 수 있습니다.';
+        if (matchSummary) matchSummary.innerHTML = '';
     };
 
     const generateCombinations = () => {
         if (!generateBtn || !combinationsContainer) return;
 
         const requestedCount = Math.min(50, Math.max(1, Number(combinationCountInput?.value || 1)));
-        combinationCountInput.value = requestedCount;
+        if (combinationCountInput) combinationCountInput.value = requestedCount;
         currentCombinations = [];
 
         try {
@@ -480,26 +444,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCombinations.push(generateFilteredCombination());
             }
             displayCombinations(currentCombinations);
-            copyStatus.textContent = '';
+            if (copyStatus) copyStatus.textContent = '';
         } catch (error) {
-            copyStatus.textContent = error.message;
+            if (copyStatus) copyStatus.textContent = error.message;
         }
     };
 
     const copyCombinations = async () => {
-        if (!currentCombinations.length) {
-            generateCombinations();
-        }
+        if (!currentCombinations.length) generateCombinations();
 
-        const text = currentCombinations
-            .map((combination, index) => `${index + 1}조합: ${combination.join(', ')}`)
-            .join('\n');
+        const text = currentCombinations.map((combination, index) => `${index + 1}조합: ${combination.join(', ')}`).join('\n');
 
         try {
             await navigator.clipboard.writeText(text);
-            copyStatus.innerHTML = '생성한 조합을 모두 복사했습니다.<br>메모장, 카카오톡, 엑셀 등에 바로 붙여넣을 수 있습니다.';
+            if (copyStatus) copyStatus.innerHTML = '생성된 조합을 복사했습니다.<br>메모장, 메시지, 기록 앱 등에 붙여넣을 수 있습니다.';
         } catch {
-            copyStatus.textContent = text;
+            if (copyStatus) copyStatus.textContent = text;
         }
     };
 
@@ -516,9 +476,8 @@ document.addEventListener('DOMContentLoaded', () => {
         excludedNumbers.clear();
         renderNumberGrid();
         updateSelectionSummary();
-        copyStatus.textContent = '선택한 고정/제외 번호만 초기화했습니다. 새 번호는 조합 생성 버튼을 눌러 만들어주세요.';
+        if (copyStatus) copyStatus.textContent = '고정 번호와 제외 번호 선택을 초기화했습니다.';
     });
-
     reloadWinningBtn?.addEventListener('click', loadWinningNumbers);
 
     showEmptyGeneratorState();

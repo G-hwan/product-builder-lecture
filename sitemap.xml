@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://g-hwan.github.io/product-builder-lecture/</loc>
+        <loc>https://product-builder-lecture-8ea.pages.dev/</loc>
+        <lastmod>2026-05-14</lastmod>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://g-hwan.github.io/product-builder-lecture/privacy.html</loc>
-        <priority>0.5</priority>
+        <loc>https://product-builder-lecture-8ea.pages.dev/privacy.html</loc>
+        <lastmod>2026-05-14</lastmod>
+        <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://g-hwan.github.io/product-builder-lecture/terms.html</loc>
-        <priority>0.5</priority>
+        <loc>https://product-builder-lecture-8ea.pages.dev/terms.html</loc>
+        <lastmod>2026-05-14</lastmod>
+        <priority>0.6</priority>
     </url>
 </urlset>
